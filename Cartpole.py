@@ -8,11 +8,7 @@ from collections import namedtuple
 from itertools import count
 from PIL import Image
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-import torchvision.transforms as T
+import DQN
 
 
 env = gym.make('CartPole-v0').unwrapped
@@ -23,5 +19,8 @@ if is_ipython:
     from IPython import display
 
 plt.ion()
+
+# Create a tuple to store expereince replay memory
+Expereince = namedtuple('Expereince',('state','action','next_state','reward'))
 
  
