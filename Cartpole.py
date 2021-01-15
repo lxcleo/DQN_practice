@@ -22,5 +22,5 @@ plt.ion()
 
 # Create a tuple to store expereince replay memory
 Expereince = namedtuple('Expereince',('state','action','next_state','reward'))
-
+x
  

@@ -21,5 +21,5 @@ class DQN(nn.Module):
 		# Reshape the output to fit lienar fc layer
 		# -1 will like python to calculate the number of 
 		# columes according to the given rows
-		return self.head(x.view(x.size(0), -1))
+		return x.view(x.size(0), -1)
 

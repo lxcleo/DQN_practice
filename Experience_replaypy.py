@@ -1,30 +1,17 @@
-import math
-import gym
-import random
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from collections import namedtuple
-from itertools import count
-from PIL import Image
+class ReplayMemory():
+	# Capacity = N how many frames could be stored
+	def __init__(self, capacity):
+		self.capacity = capacity
+		self.memory = []
+		self.count = 0
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-import torchvision.transforms as T
+	def push(self,experience):
+		if len(self.memory) < self.capacity:
+			self.memory.append(experience)
+		else:
+			self.memory[self.count % self.capacity] = experience
+			self.count += 1
+	def sample(self,batch_size):
+		return random.sample(self.memory,batch_size)
 
 
-env = gym.make('CartPole-v0').unwrapped
-
-# set up matplotlib
-is_ipython = 'inline' in matplotlib.get_backend()
-if is_ipython:
-    from IPython import display
-
-plt.ion()
-
-# Create a tuple to store expereince replay memory
-Expereince = namedtuple('Expereince',('state','action','next_state','reward'))
-
- 
