@@ -1,3 +1,4 @@
+import random
 class ReplayMemory():
 	# Capacity = N how many frames could be stored
 	def __init__(self, capacity):
@@ -11,7 +12,10 @@ class ReplayMemory():
 		else:
 			self.memory[self.count % self.capacity] = experience
 			self.count += 1
+
+
+
 	def sample(self,batch_size):
-		return random.sample(self.memory,batch_size)
+		return random.sample(self.memory, batch_size)
 
 

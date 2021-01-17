@@ -1,5 +1,6 @@
 import gym
 import random
+import math
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -23,22 +24,23 @@ class Epsilon():
 
 
 class ActionSelection():
-	def __init__(self,strategy,num_actions):
+	def __init__(self,strategy,num_actions, device):
 		self.current_step = 0
 		self.strategy = strategy
 		self.num_actions = num_actions
-
+		self.device = device
 	def selection(self,state,policy_net):
-		rate = strategy.get_EpsiolonRate(self.current_step)
+		rate = self.strategy.get_EpsiolonRate(self.current_step)
 		self.current_step += 1
 
 		if rate > random.random():
-			return random.randrange(self.num_actions) # explore
+			action = random.randrange(self.num_actions) 
+			return torch.tensor([action]).to(self.device)# explore
 
 		else:
 			# Do not track on the gradient 
 			with torch.no_grad():
-				return policy_net(state).argmax(dim=1).item() # exploit
+				return policy_net(state).argmax(dim=1).to(device) # exploit
 
 
 
@@ -63,7 +65,8 @@ class EnvManager():
 		return self.env.render(mode)
 
 
-	def num_actions_availbale(self):
+
+	def num_of_actions_avaiable(self):
 		return self.env.action_space.n
 
 	def take_action(self):
@@ -84,10 +87,6 @@ class EnvManager():
 		screen = self.get_processed_screen()
 		return screen.shape[2]
 
-	def showone(self):
-		return 123
-
-
 	def get_width(self):
 		screen = self.get_processed_screen()
 		return screen.shape[3]
@@ -101,7 +100,7 @@ class EnvManager():
 
 	def get_state(self):
 		if self.just_starting() or self.done:
-			self.curretn_screen = self.get_processed_screen()
+			self.current_screen = self.get_processed_screen()
 			black_screen = torch.zeros_like(self.current_screen)
 			return black_screen
 
@@ -131,6 +130,7 @@ def plot(values, moving_avg_period):
 	plt.plot(values)
 	plt.plot(get_moving_average(moving_avg_period, values))
 	plt.pause(0.001)
+	if is_ipython: display.clear_output(wait=True)
 
 
 
@@ -146,4 +146,7 @@ def get_moving_average(period, values):
 	else:
 		moving_avg = torch.zeros(len(values))
 		return moving_avg.numpy()
+
+
+
 
