@@ -83,8 +83,8 @@ for epsiode in range(num_epsiodes):
 			experiences = memory.sample(batch_size)
 			states, actions, rewards, next_states = extract_tensors(experiences)
 
-			current_q_values = QValues.get_current(policy_net, states, actions)
-			next_q_values = QValues.get_next(target_net, states, actions)
+			current_q_values = st.QValues.get_current(policy_net, states, actions)
+			next_q_values = st.QValues.get_next(target_net, states, actions)
 			target_q_values = (next_q_values * gamma) + rewards
 
 			loss = F.mse_loss(current_q_values, target_q_values.unsqueeze(1))
