@@ -9,6 +9,9 @@ from PIL import Image
 import matplotlib
 import matplotlib.pyplot as plt
 
+is_ipython = 'inline' in matplotlib.get_backend()
+if is_ipython: from IPython import display
+
 class Epsilon():
 	def __init__(self,start,end,decay):
 		self.start = start
@@ -40,7 +43,7 @@ class ActionSelection():
 		else:
 			# Do not track on the gradient 
 			with torch.no_grad():
-				return policy_net(state).argmax(dim=1).to(device) # exploit
+				return policy_net(state).argmax(dim=1).to(self.device) # exploit
 
 
 
@@ -65,11 +68,10 @@ class EnvManager():
 		return self.env.render(mode)
 
 
-
 	def num_of_actions_avaiable(self):
 		return self.env.action_space.n
 
-	def take_action(self):
+	def take_action(self, action):
 		_, reward, self.done, _ = self.env.step(action.item())
 		return torch.tensor([reward], device = self.device)
 

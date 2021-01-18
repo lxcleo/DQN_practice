@@ -7,6 +7,12 @@ from PIL import Image
 import torch
 import gym
 import numpy as np
+import Experience_replay as ep
+memory = ep.ReplayMemory(20)
+experiences = memory.sample(26)
+
+
+'''
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 em = st.EnvManager(device)
@@ -22,7 +28,6 @@ print(num)
 print(num)
 print(num)
 print(num)
-'''
 st.plot(np.random.rand(300), 100)
 screen = em.render('rgb_array')
 screen = em.get_processed_screen()

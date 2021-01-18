@@ -41,7 +41,7 @@ strategy = st.Epsilon(eps_start, eps_end, eps_decay)
 agent = st.ActionSelection(strategy, em.num_of_actions_avaiable(), device)
 memory = ep.ReplayMemory(memory_size)
 # Create a tuple to store expereince replay memory
-Expereince = namedtuple('Expereince',('state','action','next_state','reward'))
+Experience = namedtuple('Experience',('state','action','next_state','reward'))
 
 # Define NN 
 policy_net = DQN.DQN(em.get_height(), em.get_width()).to(device)
@@ -73,8 +73,8 @@ for epsiode in range(num_epsiodes):
 	state = em.get_state()
 
 	for timestep in count():
-		experiences = memory.sample(batch_size)
-		states, action, rewards, next_states = extract_tensors(experiences)
+		action = agent.selection(state, policy_net)
+		reward = em.take_action(action)
 		next_state = em.get_state()
 		memory.push(Experience(state, action, next_state, reward))
 		state = next_state
@@ -95,7 +95,7 @@ for epsiode in range(num_epsiodes):
 
 		if em.done:
 			episode_duration.append(timestep)
-			plot(episode_duration, 100)
+			st.plot(episode_duration, 100)
 			break
 
 	if epsiode % target_update == 0:
